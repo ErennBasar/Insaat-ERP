@@ -1,0 +1,6 @@
+@InsaatERP.API_HostAddress = http://localhost:5277
+
+GET {{InsaatERP.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

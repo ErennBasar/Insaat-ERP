@@ -1,0 +1,150 @@
+<div class="login-theme-wrapper">
+  <div class="layout">
+
+    <div class="left-panel">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18M6 21V7l6-4 6 4v14M9 21v-6h6v6"/>
+          </svg>
+        </div>
+        <span class="brand-name">InşaatERP</span>
+        <span class="brand-tag">Enterprise</span>
+      </div>
+
+      <div class="hero">
+        <div class="hero-eyebrow">Taahhüt Yönetim Platformu</div>
+        <h1 class="hero-title">Tüm projelerinizi<br/><span>tek platformdan</span><br/>yönetin.</h1>
+        <p class="hero-desc">Hakediş, sözleşme, stok, personel ve nakit akışını anlık takip edin. Veriye dayalı kararlar alın, gecikmeleri önceden önleyin.</p>
+
+        <div class="module-pills">
+          <div class="pill"><span class="pill-dot"></span>Proje Yönetimi</div>
+          <div class="pill"><span class="pill-dot"></span>Hakediş Takip</div>
+          <div class="pill"><span class="pill-dot"></span>Teminat Mektupları</div>
+          <div class="pill"><span class="pill-dot"></span>Satın Alma</div>
+          <div class="pill"><span class="pill-dot"></span>Stok / Depo</div>
+          <div class="pill"><span class="pill-dot" style="background:#a78bfa"></span>Yapay Zeka</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-num">13</div><div class="stat-lbl">Modül</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num">247</div><div class="stat-lbl">Aktif Proje</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num">99.9%</div><div class="stat-lbl">Uptime</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="form-container">
+
+        <div *ngIf="currentView === 'login' && !isSuccess">
+          <div class="form-header">
+            <div class="form-header-top">
+              <h2 class="form-title">Giriş Yap</h2>
+              <div class="secure-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Güvenli Bağlantı
+              </div>
+            </div>
+            <p class="form-subtitle">Hesabınıza erişmek için bilgilerinizi girin.</p>
+          </div>
+
+          <div class="error-msg" *ngIf="errorMessage">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>{{ errorMessage }}</span>
+          </div>
+
+          <div class="field">
+            <div class="field-label"><span>Kullanıcı Adı / E-posta</span></div>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input type="text" [(ngModel)]="username" placeholder="kullanici@firma.com" (keydown.enter)="handleLogin()"/>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">
+              <span>Şifre</span><a href="#" (click)="showForgot($event)">Şifremi Unuttum</a>
+            </div>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input [type]="isPasswordVisible ? 'text' : 'password'" [(ngModel)]="password" placeholder="••••••••" (keydown.enter)="handleLogin()"/>
+
+              <button class="input-toggle" (click)="togglePassword()">
+                <svg *ngIf="!isPasswordVisible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg *ngIf="isPasswordVisible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="remember-row">
+            <div class="custom-check" [ngClass]="{'checked': isRememberChecked}" (click)="toggleRemember()">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5,6 4.5,9 10.5,3"/></svg>
+            </div>
+            <span class="remember-label" (click)="toggleRemember()">Beni hatırla</span>
+          </div>
+
+          <button class="btn-login" [ngClass]="{'loading': isLoading}" [disabled]="isLoading" (click)="handleLogin()">
+            <div class="spinner"></div>
+            <span class="btn-text" style="display:flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              Sisteme Giriş Yap
+            </span>
+          </button>
+
+          <div class="divider"><div class="divider-line"></div><span class="divider-text">veya kurumsal giriş</span><div class="divider-line"></div></div>
+          <button class="btn-sso" (click)="handleSSO()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            {{ ssoText }}
+          </button>
+        </div>
+
+        <div *ngIf="currentView === 'forgot' && !isSuccess">
+          <div class="form-header">
+            <div class="form-header-top"><h2 class="form-title">Şifremi Sıfırla</h2></div>
+            <p class="form-subtitle">E-posta adresinize şifre sıfırlama bağlantısı gönderilecektir.</p>
+          </div>
+
+          <div class="field">
+            <div class="field-label"><span>E-posta Adresi</span></div>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input type="email" [(ngModel)]="resetEmail" placeholder="kullanici@firma.com" />
+            </div>
+          </div>
+
+          <button class="btn-login" [ngClass]="{'loading': isLoading}" [disabled]="isLoading" (click)="handleReset()" style="margin-bottom:16px">
+            <div class="spinner"></div>
+            <span class="btn-text">Sıfırlama Bağlantısı Gönder</span>
+          </button>
+
+          <button class="btn-sso" (click)="backToLogin()">Girişe Geri Dön</button>
+        </div>
+
+        <div class="success-overlay visible" *ngIf="isSuccess">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="success-title">Giriş Başarılı</div>
+          <p class="success-desc">Hoş geldiniz! Yönetim paneline yönlendiriliyorsunuz...</p>
+          <div class="redirect-bar">
+            <div class="redirect-fill" [ngStyle]="{'width': startProgress ? '100%' : '0%'}"></div>
+          </div>
+        </div>
+
+        <div class="form-footer" *ngIf="!isSuccess">
+          <span class="footer-copy">&copy; 2026 InşaatERP.</span>
+          <span class="footer-version">v2.5.1</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
