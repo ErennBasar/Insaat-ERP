@@ -8,7 +8,10 @@ public record CreateProjectCommand(
     decimal ContractValue,
     DateTime StartDate,
     DateTime? EndDate,
-    decimal ExpectedProfitMargin
+    decimal ExpectedProfitMargin,
+    string Type,
+    string ProjectManager,
+    string Location
     ) : IRequest<Guid>; // Geriye oluşturulan projenin Id'si ni (Guid) dönecek
     
     

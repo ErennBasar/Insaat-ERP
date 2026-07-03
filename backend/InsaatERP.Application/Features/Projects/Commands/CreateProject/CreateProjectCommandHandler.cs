@@ -22,7 +22,10 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             ContractValue = request.ContractValue,
             StartDate = request.StartDate.ToUniversalTime(),
             EndDate = request.EndDate?.ToUniversalTime(),
-            ExpectedProfitMargin = request.ExpectedProfitMargin
+            ExpectedProfitMargin = request.ExpectedProfitMargin,
+            Type = request.Type,
+            ProjectManager = request.ProjectManager,
+            Location = request.Location,
         };
 
         await _repository.AddAsync(project);

@@ -1,32 +1,17 @@
-import { Component } from '@angular/core';
+import { Component,inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProjectService, Project } from '../projects/project.service';
 import { LucideAngularModule } from 'lucide-angular';
 import {
   FolderKanban, MapPin, User, Calendar, TrendingUp,
   Plus, Filter, Search
 } from 'lucide-angular';
 
-export interface ProjectData {
-  id: string;
-  name: string;
-  client: string;
-  manager: string;
-  location: string;
-  contractValue: string;
-  completedValue: string;
-  remainingValue: string;
-  startDate: string;
-  endDate: string;
-  progress: number;
-  status: 'Devam Ediyor' | 'Kritik' | 'Başlangıç' | 'Tamamlandı';
-  profit: string;
-  type: 'Elektrik' | 'Mekanik' | 'İnşaat';
-}
-
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, ReactiveFormsModule],
   templateUrl: './projects.html',
   styleUrl: './projects.scss'
 })
@@ -41,36 +26,63 @@ export class ProjectsComponent {
   readonly Filter = Filter;
   readonly Search = Search;
 
-  projects: ProjectData[] = [
-    {
-      id: "PRJ-2026-001", name: "Ankara OSB Elektrik Alt Yapı", client: "EÜAŞ", manager: "Murat Demir",
-      location: "Ankara", contractValue: "₺24.500.000", completedValue: "₺16.660.000", remainingValue: "₺7.840.000",
-      startDate: "15.03.2025", endDate: "30.09.2026", progress: 68, status: "Devam Ediyor", profit: "+%11.2", type: "Elektrik",
-    },
-    {
-      id: "PRJ-2026-002", name: "İzmir Liman Mekanik Tesisat", client: "Liman İşletmeleri A.Ş.", manager: "Selin Kaya",
-      location: "İzmir", contractValue: "₺18.200.000", completedValue: "₺7.644.000", remainingValue: "₺10.556.000",
-      startDate: "01.06.2025", endDate: "30.06.2027", progress: 42, status: "Devam Ediyor", profit: "+%9.8", type: "Mekanik",
-    },
-    {
-      id: "PRJ-2026-003", name: "İstanbul Metro İkmal Projesi", client: "İETT", manager: "Burak Arslan",
-      location: "İstanbul", contractValue: "₺31.800.000", completedValue: "₺28.302.000", remainingValue: "₺3.498.000",
-      startDate: "10.01.2025", endDate: "31.07.2026", progress: 89, status: "Kritik", profit: "+%7.1", type: "Elektrik",
-    },
-    {
-      id: "PRJ-2026-004", name: "Bursa Fabrika Güçlendirme", client: "Bosch Türkiye", manager: "Elif Yılmaz",
-      location: "Bursa", contractValue: "₺9.600.000", completedValue: "₺1.440.000", remainingValue: "₺8.160.000",
-      startDate: "01.05.2026", endDate: "31.12.2027", progress: 15, status: "Başlangıç", profit: "+%14.5", type: "İnşaat",
-    },
-    {
-      id: "PRJ-2026-005", name: "Konya OSB Dağıtım Hattı", client: "MEDAŞ", manager: "Emre Çelik",
-      location: "Konya", contractValue: "₺14.100.000", completedValue: "₺7.755.000", remainingValue: "₺6.345.000",
-      startDate: "15.09.2025", endDate: "15.04.2027", progress: 55, status: "Devam Ediyor", profit: "+%13.0", type: "Elektrik",
-    }
-  ];
+  // Dependency Injection (Servis ve Formlar)
+  private projectService = inject(ProjectService);
+  private fb = inject(FormBuilder);
 
+
+  projects: Project[] = [];
   filters = ["Tümü", "Elektrik", "Mekanik", "İnşaat"];
   activeFilter = "Tümü";
+
+  projectForm!: FormGroup;
+  showAddModal = false;
+
+  ngOnInit(): void {
+    this.initForm();
+    this.loadProjects();
+  }
+
+  // Yeni Proje formunun kurallarını belirliyoruz
+  initForm(): void {
+    this.projectForm = this.fb.group({
+      name: ['', Validators.required],
+      employerName: ['', Validators.required],
+      contractValue: [0, [Validators.required, Validators.min(1)]],
+      startDate: ['', Validators.required],
+      endDate: [''],
+      expectedProfitMargin: [0, Validators.required],
+      type: ['İnşaat', Validators.required],
+      projectManager: ['', Validators.required],
+      location: ['', Validators.required]
+    });
+  }
+
+  // Backend'den verileri çekiyoruz
+  loadProjects(): void {
+    this.projectService.getProjects().subscribe({
+      next: (data) => this.projects = data,
+      error: (err) => console.error('Projeler çekilirken hata oluştu:', err)
+    });
+  }
+
+  // Formu kaydet butonuna basıldığında çalışacak metot
+  onSubmit(): void {
+    if (this.projectForm.invalid) {
+      alert('Lütfen zorunlu alanları doldurun Usta!');
+      return;
+    }
+
+    this.projectService.createProject(this.projectForm.value).subscribe({
+      next: (newId) => {
+        console.log('Proje başarıyla eklendi. ID:', newId);
+        this.showAddModal = false; // Formu kapat
+        this.projectForm.reset(); // İçini temizle
+        this.loadProjects(); // Tabloyu yeni verilerle güncelle
+      },
+      error: (err) => console.error('Proje eklenirken hata:', err)
+    });
+  }
 
   getStatusClass(status: string): string {
     const map: Record<string, string> = {

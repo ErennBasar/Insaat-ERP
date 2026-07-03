@@ -1,5 +1,6 @@
 using InsaatERP.Application.Repositories;
 using InsaatERP.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace InsaatERP.Infrastructure.Repositories;
 
@@ -20,5 +21,15 @@ public class ProjectRepository : IProjectRepository
     public async Task<int> SaveChangesAsync()
     {
         return await _context.SaveChangesAsync();
+    }
+
+    public IQueryable<Project> GetAll(bool tracking = false)
+    {
+        var query = _context.Projects.AsQueryable();
+        
+        if (!tracking)
+            query = query.AsNoTracking(); 
+            
+        return query;
     }
 }

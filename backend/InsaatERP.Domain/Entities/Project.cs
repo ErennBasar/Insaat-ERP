@@ -13,6 +13,10 @@ public class Project : BaseEntity
     public DateTime? EndDate { get; set; }
     public ProjectStatus Status { get; set; } = ProjectStatus.DevamEdiyor;
     public Decimal ExpectedProfitMargin { get; set; }
+    public string Type { get; set; } = string.Empty; 
+    public string ProjectManager { get; set; } = string.Empty; 
+    public string Location { get; set; } = string.Empty; 
+    public int Progress { get; set; } = 0; 
 
     public ICollection<Contract> Contracts { get; protected set; } = new List<Contract>();
     public ICollection<ProgressPayment> ProgressPayments { get; protected set; } = new List<ProgressPayment>();

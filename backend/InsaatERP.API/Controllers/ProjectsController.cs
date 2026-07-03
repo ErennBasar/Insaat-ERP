@@ -1,4 +1,5 @@
 using InsaatERP.Application.Features.Projects.Commands.CreateProject;
+using InsaatERP.Application.Features.Projects.Queries.GetAllProjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,5 +26,13 @@ public class ProjectsController : ControllerBase
             Id = projectId,
             Message = "Project created successfully"
         });
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var query = new GetAllProjectsQuery();
+        var projects = await _mediator.Send(query);
+        return Ok(projects);
     }
 }
