@@ -1,0 +1,158 @@
+<div class="page-container">
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="breadcrumbs">
+        <span>Ana Sayfa</span> <span class="separator">/</span> <span>Projeler</span>
+      </div>
+      <h1 class="page-title">Proje Yönetimi</h1>
+      <p class="page-desc">Tüm aktif ve tamamlanan projeler</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary">
+        <lucide-icon [img]="Plus" class="icon-sm"></lucide-icon>
+        Yeni Proje
+      </button>
+    </div>
+  </header>
+
+  <!-- Stat Cards Grid -->
+  <div class="stat-grid">
+    <!-- Card 1 -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Toplam Proje</span>
+        <lucide-icon [img]="FolderKanban" class="icon-sm text-muted"></lucide-icon>
+      </div>
+      <div class="stat-value">12</div>
+      <div class="stat-sub">5 gösteriliyor</div>
+    </div>
+    <!-- Card 2 -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Aktif Proje</span>
+        <lucide-icon [img]="TrendingUp" class="icon-sm text-primary"></lucide-icon>
+      </div>
+      <div class="stat-value">9</div>
+      <div class="stat-sub trend-up">
+        <lucide-icon [img]="TrendingUp" class="icon-xs"></lucide-icon>
+        +2 Devam ediyor
+      </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Kritik Proje</span>
+        <lucide-icon [img]="FolderKanban" class="icon-sm text-danger"></lucide-icon>
+      </div>
+      <div class="stat-value text-danger">2</div>
+      <div class="stat-sub text-danger">Gecikme riski</div>
+    </div>
+    <!-- Card 4 -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Ort. Kârlılık</span>
+        <lucide-icon [img]="TrendingUp" class="icon-sm text-success"></lucide-icon>
+      </div>
+      <div class="stat-value">%11.1</div>
+      <div class="stat-sub trend-up text-success">
+        <lucide-icon [img]="TrendingUp" class="icon-xs"></lucide-icon>
+        +0.8p Tüm projeler
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="search-box">
+      <lucide-icon [img]="Search" class="icon-xs text-muted"></lucide-icon>
+      <input type="text" placeholder="Proje ara..." />
+    </div>
+    <button class="btn-outline">
+      <lucide-icon [img]="Filter" class="icon-xs text-muted"></lucide-icon>
+      Filtrele
+    </button>
+    <div class="filter-pills">
+      @for (f of filters; track f) {
+        <button
+          class="filter-pill"
+          [class.active]="f === activeFilter"
+          (click)="activeFilter = f">
+          {{ f }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Proje</th>
+        <th>İşveren / PM</th>
+        <th>Konum</th>
+        <th>Sözleşme</th>
+        <th>İlerleme</th>
+        <th>Tarih</th>
+        <th>Kâr</th>
+        <th>Durum</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (p of projects; track p.id) {
+          <tr>
+            <td>
+              <p class="title-text">{{ p.name }}</p>
+              <div class="sub-row">
+                <span class="text-muted">{{ p.id }}</span>
+                <span class="type-badge" [ngClass]="getTypeClass(p.type)">{{ p.type }}</span>
+              </div>
+            </td>
+            <td>
+              <p class="title-text">{{ p.client }}</p>
+              <div class="sub-row">
+                <lucide-icon [img]="User" class="icon-xs text-muted"></lucide-icon>
+                <span class="text-muted">{{ p.manager }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="sub-row">
+                <lucide-icon [img]="MapPin" class="icon-xs text-muted"></lucide-icon>
+                <span class="title-text">{{ p.location }}</span>
+              </div>
+            </td>
+            <td>
+              <p class="title-text strong">{{ p.contractValue }}</p>
+              <p class="text-muted text-xs">Kalan: {{ p.remainingValue }}</p>
+            </td>
+            <td class="px-4 py-3 min-w-[120px]">
+              <div class="progress-wrapper">
+                <div class="progress-track">
+                  <div class="progress-fill" [ngClass]="getProgressBarClass(p.status)" [style.width.%]="p.progress"></div>
+                </div>
+                <span class="progress-text" [ngClass]="getProgressTextClass(p.status)">%{{ p.progress }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="sub-row">
+                <lucide-icon [img]="Calendar" class="icon-xs text-muted"></lucide-icon>
+                <span class="text-muted">{{ p.endDate }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="profit-text">{{ p.profit }}</span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(p.status)">
+                {{ p.status }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>
