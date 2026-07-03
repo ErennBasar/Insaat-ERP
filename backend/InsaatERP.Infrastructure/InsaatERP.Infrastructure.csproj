@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\InsaatERP.Application\InsaatERP.Application.csproj" />
       <ProjectReference Include="..\InsaatERP.Domain\InsaatERP.Domain.csproj" />
     </ItemGroup>
 
