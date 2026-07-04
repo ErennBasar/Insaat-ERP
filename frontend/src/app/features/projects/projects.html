@@ -105,13 +105,11 @@
             <td>
               <p class="title-text">{{ p.client }}</p>
               <div class="sub-row">
-                <lucide-icon [img]="User" class="icon-xs text-muted"></lucide-icon>
                 <span class="text-muted">{{ p.manager || 'Atanmadı' }}</span>
               </div>
             </td>
             <td>
               <div class="sub-row">
-                <lucide-icon [img]="MapPin" class="icon-xs text-muted"></lucide-icon>
                 <span class="title-text">{{ p.location || 'Belirtilmedi' }}</span>
               </div>
             </td>
@@ -129,7 +127,6 @@
             </td>
             <td>
               <div class="sub-row">
-                <lucide-icon [img]="Calendar" class="icon-xs text-muted"></lucide-icon>
                 <span class="text-muted">{{ p.endDate | date:'dd.MM.yyyy' }}</span>
               </div>
             </td>
@@ -156,8 +153,9 @@
 </div>
 
 @if (showAddModal) {
-  <div class="modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 999; backdrop-filter: blur(2px);">
-    <div class="modal-content" style="background: #ffffff; padding: 2rem; border-radius: 12px; width: 450px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); color: #1f2937;">
+  <div class="modal-overlay" (click)="showAddModal = false" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 999; backdrop-filter: blur(2px);">
+
+    <div class="modal-content" (click)="$event.stopPropagation()" style="background: #ffffff; padding: 2rem; border-radius: 12px; width: 450px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); color: #1f2937;">
 
       <h2 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.75rem;">Yeni Proje Oluştur</h2>
 
