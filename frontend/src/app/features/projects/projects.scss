@@ -238,10 +238,11 @@
   padding: 4px 8px;
   border-radius: 999px;
 }
-.status-primary { background: rgba(59, 130, 246, 0.15); color: var(--blue); }
-.status-danger { background: rgba(239, 68, 68, 0.15); color: var(--error); }
-.status-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-.status-success { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+.status-primary { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.status-danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.status-warning { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.status-success { background: rgba(34, 197, 94, 0.15); color: #10b981; }
+.status-orange { background: rgba(249, 115, 22, 0.15); color: #f97316; }
 
 .type-badge {
   font-size: 10px;
@@ -256,3 +257,17 @@
 @media (max-width: 1024px) {
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* --- İLERLEME ÇUBUĞU RENKLERİ --- */
+.progress-fill.bg-primary { background-color: #3b82f6 !important; }
+.progress-fill.bg-danger  { background-color: #ef4444 !important; }
+.progress-fill.bg-warning { background-color: #f59e0b !important; }
+.progress-fill.bg-success { background-color: #10b981 !important; }
+.progress-fill.bg-orange { background-color: #f97316 !important; }
+
+/* --- İLERLEME YÜZDESİ METİN RENKLERİ --- */
+.progress-text.text-primary { color: #3b82f6 !important; }
+.progress-text.text-danger  { color: #ef4444 !important; }
+.progress-text.text-success { color: #10b981 !important; }
+.progress-text.text-warning { color: #eab308 !important; }
+.progress-text.text-orange  { color: #f97316 !important; }

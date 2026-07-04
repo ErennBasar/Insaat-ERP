@@ -22,4 +22,15 @@ public class Project : BaseEntity
     public ICollection<ProgressPayment> ProgressPayments { get; protected set; } = new List<ProgressPayment>();
     public ICollection<GuaranteeLetter> GuaranteeLetters { get; protected set; } = new List<GuaranteeLetter>();
 
+    public void UpdateProgress(int newProgress, ProjectStatus newStatus)
+    {
+        if (newProgress < 0 || newProgress > 100)
+            throw new ArgumentException("İlerleme değeri 0 ile 100 arasında olmalıdır usta!");
+
+        Progress = newProgress;
+        Status = newStatus;
+        
+        // protected alanı burada doğrudan set ediyoruz
+        UpdatedDate = DateTime.UtcNow; 
+    }
 }

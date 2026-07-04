@@ -38,6 +38,10 @@ export class ProjectsComponent {
   projectForm!: FormGroup;
   showAddModal = false;
 
+  updateForm!: FormGroup;
+  showUpdateModal = false;
+  selectedProjectId: string = '';
+
   ngOnInit(): void {
     this.initForm();
     this.loadProjects();
@@ -55,6 +59,11 @@ export class ProjectsComponent {
       type: ['İnşaat', Validators.required],
       projectManager: ['', Validators.required],
       location: ['', Validators.required]
+    });
+
+    this.updateForm = this.fb.group({
+      newProgress: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+      newStatus: ['DevamEdiyor', Validators.required]
     });
   }
 
@@ -84,39 +93,122 @@ export class ProjectsComponent {
     });
   }
 
+  openUpdateModal(project: Project): void {
+    this.selectedProjectId = project.id;
+    this.updateForm.patchValue({
+      newProgress: project.progress,
+      newStatus: project.status
+    });
+    this.showUpdateModal = true;
+  }
+
+  onUpdateSubmit(): void {
+    if (this.updateForm.invalid) return;
+
+    const command = {
+      id: this.selectedProjectId,
+      newProgress: this.updateForm.value.newProgress,
+      newStatus: this.updateForm.value.newStatus
+    };
+
+    this.projectService.updateProgress(command).subscribe({
+      next: () => {
+        this.showUpdateModal = false;
+        this.loadProjects(); // Tabloyu ve üstteki istatistik kartlarını yeniler
+      },
+      error: (err) => console.error('Güncelleme hatası:', err)
+    });
+  }
+  get activeProjectsCount(): number {
+    return this.projects.filter(p =>
+      p.status === 'DevamEdiyor' || p.status === 'Beklemede').length;
+  }
+
+  get criticalProjectsCount(): number {
+    return this.projects.filter(p => this.isProjectCritical(p)).length;
+  }
+
+  get averageProfitability(): number {
+    if (this.projects.length === 0) return 0;
+    const totalProfit = this.projects.reduce((sum, p) => sum + Number(p.profit || 0), 0);
+    return totalProfit / this.projects.length;
+  }
+
+  isProjectCritical(project: any): boolean {
+
+    if (project.status !== 'DevamEdiyor') return false;
+
+    if (!project.endDate) return false;
+
+    const today = new Date();
+    const end = new Date(project.endDate);
+
+    if (today > end && project.progress < 100) return true;
+
+    const timeDiff = end.getTime() - today.getTime();
+    const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    // Teslime 30 gün veya daha az kalmış ama proje %95'in altındaysa (Riskli)
+    if (daysLeft > 0 && daysLeft <= 30 && project.progress < 95) return true;
+
+    return false;
+  }
+
+  // --- UI FORMATLAMA VE RENK SINIFLARI ---
+
+  // Ekranda "DevamEdiyor" yerine düzgünce "Devam Ediyor" yazması için dönüştürücü
+  getStatusLabel(status: string): string {
+    const map: Record<string, string> = {
+      "Beklemede": "Beklemede",
+      "DevamEdiyor": "Devam Ediyor",
+      "Tamamlandi": "Tamamlandı",
+      "IptalEdildi": "İptal Edildi",
+      "Askida": "Askıda"
+    };
+    return map[status] || status;
+  }
+
+  // Tablodaki durum rozetinin rengi
   getStatusClass(status: string): string {
     const map: Record<string, string> = {
-      "Devam Ediyor": "status-primary",
-      "Kritik": "status-danger",
-      "Başlangıç": "status-warning",
-      "Tamamlandı": "status-success",
+      "Beklemede": "status-warning",
+      "DevamEdiyor": "status-primary",
+      "Tamamlandi": "status-success",
+      "IptalEdildi": "status-danger",
+      "Askida": "status-orange"
     };
     return map[status] || "status-primary";
   }
 
-  getTypeClass(type: string): string {
-    const map: Record<string, string> = {
-      "Elektrik": "type-blue",
-      "Mekanik": "type-purple",
-      "İnşaat": "type-orange",
-    };
-    return map[type] || "type-blue";
-  }
-
-  // Sınıfın içine (diğer metotların yanına) şu metodu ekle:
-  getProgressTextClass(status: string): string {
-    const map: Record<string, string> = {
-      "Devam Ediyor": "text-primary",
-      "Kritik": "text-danger",
-      "Başlangıç": "text-warning",
-      "Tamamlandı": "text-success",
-    };
-    return map[status] || "text-primary";
-  }
-
-  getProgressBarClass(status: string): string {
-    if (status === 'Kritik') return 'bg-danger';
-    if (status === 'Başlangıç') return 'bg-warning';
+  // İlerleme çubuğunun rengi (Proje nesnesinin kendisine bakarak karar veriyor)
+  getProgressBarClass(project: any): string {
+    if (this.isProjectCritical(project)) return 'bg-danger';
+    if (project.status === 'Beklemede') return 'bg-warning';
+    if (project.status === 'Askida') return 'bg-orange';
+    if (project.status === 'Tamamlandi') return 'bg-success';
+    if (project.status === 'IptalEdildi') return 'bg-danger';
     return 'bg-primary';
+  }
+
+  // İlerleme yüzdesinin metin rengi
+  getProgressTextClass(project: any): string {
+    if (this.isProjectCritical(project)) return 'text-danger';
+    if (project.status === 'Beklemede') return 'text-warning';
+    if (project.status === 'Askida') return 'text-orange';
+    if (project.status === 'Tamamlandi') return 'text-success';
+    if (project.status === 'IptalEdildi') return 'text-danger';
+    return 'text-primary';
+  }
+
+  getTypeClass(type: string): string {
+    if (!type) return "type-blue";
+
+    const normalized = type.trim().toLowerCase();
+
+    if (normalized === 'elektrik') return 'type-blue';
+    if (normalized === 'mekanik') return 'type-purple';
+    if (normalized === 'i̇nşaat' || normalized === 'inşaat' || normalized === 'insaat') return 'type-orange';
+
+    return "type-blue";
   }
 }

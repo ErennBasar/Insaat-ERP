@@ -30,10 +30,10 @@
         <span class="stat-label">Aktif Proje</span>
         <lucide-icon [img]="TrendingUp" class="icon-sm text-primary"></lucide-icon>
       </div>
-      <div class="stat-value">9</div>
+      <div class="stat-value">{{ activeProjectsCount}}</div>
       <div class="stat-sub trend-up">
         <lucide-icon [img]="TrendingUp" class="icon-xs"></lucide-icon>
-        +2 Devam ediyor
+        Üretimde olan toplam
       </div>
     </div>
     <div class="stat-card">
@@ -41,7 +41,7 @@
         <span class="stat-label">Kritik Proje</span>
         <lucide-icon [img]="FolderKanban" class="icon-sm text-danger"></lucide-icon>
       </div>
-      <div class="stat-value text-danger">2</div>
+      <div class="stat-value text-danger">{{ criticalProjectsCount }}</div>
       <div class="stat-sub text-danger">Gecikme riski</div>
     </div>
     <div class="stat-card">
@@ -49,10 +49,10 @@
         <span class="stat-label">Ort. Kârlılık</span>
         <lucide-icon [img]="TrendingUp" class="icon-sm text-success"></lucide-icon>
       </div>
-      <div class="stat-value">%11.1</div>
+      <div class="stat-value">{{ averageProfitability }}</div>
       <div class="stat-sub trend-up text-success">
         <lucide-icon [img]="TrendingUp" class="icon-xs"></lucide-icon>
-        +0.8p Tüm projeler
+        Genel hedef marjı
       </div>
     </div>
   </div>
@@ -87,9 +87,10 @@
         <th>Konum</th>
         <th>Sözleşme</th>
         <th>İlerleme</th>
-        <th>Tarih</th>
+        <th>Bitiș</th>
         <th>Kâr</th>
         <th>Durum</th>
+        <th>İşlem</th>
       </tr>
       </thead>
       <tbody>
@@ -120,9 +121,9 @@
             <td class="px-4 py-3 min-w-[120px]">
               <div class="progress-wrapper">
                 <div class="progress-track">
-                  <div class="progress-fill" [ngClass]="getProgressBarClass(p.status)" [style.width.%]="p.progress"></div>
+                  <div class="progress-fill" [ngClass]="getProgressBarClass(p)" [style.width.%]="p.progress"></div>
                 </div>
-                <span class="progress-text" [ngClass]="getProgressTextClass(p.status)">%{{ p.progress }}</span>
+                <span class="progress-text" [ngClass]="getProgressTextClass(p)">%{{ p.progress }}</span>
               </div>
             </td>
             <td>
@@ -135,8 +136,13 @@
             </td>
             <td>
               <span class="status-badge" [ngClass]="getStatusClass(p.status)">
-                {{ p.status }}
+                {{ getStatusLabel(p.status) }}
               </span>
+            </td>
+            <td style="text-align: right;">
+              <button class="btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" (click)="openUpdateModal(p)">
+                Güncelle
+              </button>
             </td>
           </tr>
         } @empty {
@@ -220,6 +226,38 @@
         </div>
       </form>
 
+    </div>
+  </div>
+}
+
+@if (showUpdateModal) {
+  <div class="modal-overlay" (click)="showUpdateModal = false" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 999; backdrop-filter: blur(2px);">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="background: #ffffff; padding: 2rem; border-radius: 12px; width: 350px;">
+
+      <h2 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.75rem;">İlerlemeyi Güncelle</h2>
+
+      <form [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem;">İlerleme Yüzdesi (%)</label>
+          <input type="number" formControlName="newProgress" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px;" />
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem;">Proje Durumu</label>
+          <select formControlName="newStatus" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; background: white;">
+            <option value="Beklemede">Beklemede</option>
+            <option value="DevamEdiyor">Devam Ediyor</option>
+            <option value="Tamamlandi">Tamamlandı</option>
+            <option value="Askida">Askıda</option>
+            <option value="IptalEdildi">İptal Edildi</option>
+          </select>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn-outline" (click)="showUpdateModal = false" style="padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">İptal</button>
+          <button type="submit" class="btn-primary" [disabled]="updateForm.invalid" style="padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Kaydet</button>
+        </div>
+      </form>
     </div>
   </div>
 }

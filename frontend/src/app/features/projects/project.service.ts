@@ -32,4 +32,9 @@ export class ProjectService {
   createProject(projectData: any): Observable<string> {
     return this.http.post<string>(this.apiUrl, projectData);
   }
+
+  updateProgress(updateData: { id: string, newProgress: number, newStatus: string }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update-progress`, updateData);
+  }
+
 }

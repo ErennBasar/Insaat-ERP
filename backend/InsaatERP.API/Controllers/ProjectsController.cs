@@ -1,4 +1,5 @@
 using InsaatERP.Application.Features.Projects.Commands.CreateProject;
+using InsaatERP.Application.Features.Projects.Commands.UpdateProjectProgress;
 using InsaatERP.Application.Features.Projects.Queries.GetAllProjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -34,5 +35,14 @@ public class ProjectsController : ControllerBase
         var query = new GetAllProjectsQuery();
         var projects = await _mediator.Send(query);
         return Ok(projects);
+    }
+    
+    [HttpPut("update-progress")]
+    public async Task<IActionResult> UpdateProgress(UpdateProjectProgressCommand command)
+    {
+        var result = await _mediator.Send(command);
+        if (!result) return NotFound(new { Message = "Proje bulunamadı." });
+    
+        return Ok(new { Message = "Proje ilerleme durumu güncellendi." });
     }
 }
