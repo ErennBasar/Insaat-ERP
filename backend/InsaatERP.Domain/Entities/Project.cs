@@ -6,6 +6,7 @@ namespace InsaatERP.Domain.Entities;
 
 public class Project : BaseEntity
 {
+    public string ProjectCode { get; set; } = string.Empty; // PRJ-2026-01 formatında 
     public required string Name { get; set; }
     public required string EmployerName { get; set; }
     public decimal ContractValue { get; set; }

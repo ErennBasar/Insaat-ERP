@@ -19,6 +19,7 @@ public class GetAllProjectsQueryHandler : IRequestHandler<GetAllProjectsQuery, L
         var projects = await _repository.GetAll(tracking: false)
             .Select(p => new ProjectListDto(
                 p.Id,
+                p.ProjectCode,
                 p.Name,
                 p.Type,
                 p.EmployerName,
