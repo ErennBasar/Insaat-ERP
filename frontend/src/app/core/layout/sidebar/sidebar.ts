@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
+import {LucideAngularModule} from 'lucide-angular';
 import {
   LayoutDashboard, FolderKanban, FileText, Receipt, Shield,
   ShoppingCart, Package, TrendingDown, Banknote, HardHat,
   Truck, BarChart3, BrainCircuit, ChevronRight, Building2,
-  Bell, Settings, Search
+  Bell, Settings, Search, ChevronLeft
 } from 'lucide-angular';
 
 @Component({
@@ -23,6 +23,12 @@ export class Sidebar {
   readonly Bell = Bell;
   readonly Settings = Settings;
   readonly ChevronRight = ChevronRight;
+
+  isCollapsed = false;
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+  }
 
   modules = [
     {
@@ -69,4 +75,5 @@ export class Sidebar {
       ],
     },
   ];
+  protected readonly ChevronLeft = ChevronLeft;
 }

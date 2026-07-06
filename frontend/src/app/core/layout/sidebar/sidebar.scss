@@ -1,13 +1,66 @@
 /* ── Sidebar Container ── */
 .sidebar {
-  width: 240px;
-  min-width: 240px;
+  width: 200px;
+  min-width: 200px;
   background: var(--bg-surface);
   border-right: 1px solid var(--border-dim);
   display: flex;
   flex-direction: column;
   height: 100vh;
   z-index: 40;
+  transition: width 0.3s ease, min-width 0.3s ease;
+  overflow-x: hidden;
+  &.collapsed {
+    width: 72px; /* Sadece ikonların sığacağı kadar daraltıyoruz */
+    min-width: 72px;
+
+    /* Yazıları ve rozetleri yokediyoruz */
+    .logo-text-wrap,
+    .sidebar-search-container,
+    .nav-group-label,
+    .nav-label,
+    .nav-badge,
+    .nav-chevron,
+    .user-info,
+    .user-actions {
+      display: none;
+    }
+
+    /* İkonları tam ortaya hizalıyoruz */
+    .nav-item {
+      justify-content: center;
+      padding: 12px; /* Daralınca sağdan soldan çok boşluk kalmasın */
+    }
+
+    .sidebar-header,
+    .sidebar-footer{
+      justify-content: center; /* Header'ı da ortala ki buton şık dursun */
+      padding: 12px;
+    }
+  }
+}
+/* --- AÇMA KAPAMA BUTONU TASARIMI --- */
+.toggle-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+  }
+}
+
+.nav-label, .logo-title, .logo-subtitle, .nav-group-label {
+  white-space: nowrap;
 }
 
 /* ── Utilities for Icons ── */
@@ -24,8 +77,8 @@
   border-bottom: 1px solid var(--border-dim);
 }
 .logo-box {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 6px;
   background: var(--blue);
   display: flex;
@@ -36,14 +89,14 @@
 }
 .logo-text-wrap { min-width: 0; }
 .logo-title {
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1;
 }
 .logo-subtitle {
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 8px;
+  color: var(--text-primary);
   margin-top: 4px;
 }
 
@@ -95,7 +148,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  color: var(--text-muted);
+  color: var(--text-grey);
   text-transform: uppercase;
 }
 .nav-list {
@@ -114,13 +167,13 @@
   border-radius: 6px;
   font-size: 10px;
   text-decoration: none;
-  color: var(--text-secondary);
+  color: var(--text-grey);
   transition: all 0.2s;
 
   .nav-icon {
     width: 16px;
     height: 12px;
-    color: var(--text-muted);
+    color: var(--text-grey);
     transition: color 0.2s;
   }
   .nav-label { flex: 1; line-height: 1; }
@@ -155,7 +208,7 @@
 
 /* ── Badges ── */
 .nav-badge {
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 600;
   padding: 2px 6px;
   border-radius: 999px;
@@ -163,8 +216,8 @@
   text-align: center;
 }
 .badge-danger {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--red);
+  background: rgba(232,162,60,0.2);
+  color: var(--amber);
 }
 .badge-ai {
   background: rgba(59, 130, 246, 0.2);
@@ -173,7 +226,7 @@
 
 /* ── Footer ── */
 .sidebar-footer {
-  border-top: 1px solid var(--border-dim);
+  border-top: 1px solid var(--blue);
   padding: 12px;
   display: flex;
   align-items: center;
@@ -193,14 +246,14 @@
 }
 .user-info { flex: 1; min-width: 0; }
 .user-name {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
   color: var(--text-primary);
   line-height: 1;
 }
 .user-role {
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 8px;
+  color: var(--text-grey);
   margin-top: 4px;
 }
 .user-actions {
@@ -214,7 +267,7 @@
   border-radius: 4px;
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-grey);
   display: flex;
   align-items: center;
   justify-content: center;

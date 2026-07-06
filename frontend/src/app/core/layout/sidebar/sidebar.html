@@ -1,22 +1,25 @@
-<aside class="sidebar">
+<aside class="sidebar" [class.collapsed]="isCollapsed">
 
   <div class="sidebar-header">
     <div class="logo-box">
-      <lucide-icon [img]="Building2" class="icon-sm"></lucide-icon>
+      <lucide-icon [img]="Building2" size="16" class="icon-sm"></lucide-icon>
     </div>
     <div class="logo-text-wrap">
       <p class="logo-title">İnşaatERP</p>
       <p class="logo-subtitle">Taahhüt Platformu</p>
     </div>
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <lucide-icon [img]="isCollapsed ? ChevronRight : ChevronLeft" size="16"></lucide-icon>
+    </button>
   </div>
 
-  <div class="sidebar-search-container">
-    <div class="search-box">
-      <lucide-icon [img]="Search" class="icon-xs text-muted"></lucide-icon>
-      <span class="search-text">Ara...</span>
-      <kbd class="search-kbd">⌘K</kbd>
-    </div>
-  </div>
+<!--  <div class="sidebar-search-container">-->
+<!--    <div class="search-box">-->
+<!--      <lucide-icon [img]="Search" class="icon-xs text-muted"></lucide-icon>-->
+<!--      <span class="search-text">Ara...</span>-->
+<!--      <kbd class="search-kbd">⌘K</kbd>-->
+<!--    </div>-->
+<!--  </div>-->
 
   <nav class="sidebar-nav">
     @for (group of modules; track group.label) {
@@ -52,10 +55,10 @@
     </div>
     <div class="user-actions">
       <button class="action-btn">
-        <lucide-icon [img]="Bell" class="icon-xs"></lucide-icon>
+        <lucide-icon [img]="Bell" size="16" class="icon-xs"></lucide-icon>
       </button>
       <button class="action-btn">
-        <lucide-icon [img]="Settings" class="icon-xs"></lucide-icon>
+        <lucide-icon [img]="Settings" size="16" class="icon-xs"></lucide-icon>
       </button>
     </div>
   </div>
