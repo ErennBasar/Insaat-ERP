@@ -34,8 +34,8 @@ export class Sidebar {
     {
       label: "PROJE & SÖZLEŞME",
       items: [
-        { icon: FolderKanban, label: "Proje Yönetimi", href: "/projeler", badge: "12" },
-        { icon: FileText, label: "Sözleşme Yönetimi", href: "/sozlesmeler", badge: null },
+        { icon: FolderKanban, label: "Proje Yönetimi", href: "/projects", badge: "12" },
+        { icon: FileText, label: "Sözleşme Yönetimi", href: "/contracts", badge: null },
         { icon: Receipt, label: "Hakediş Yönetimi", href: "/hakedis", badge: "3" },
         { icon: Shield, label: "Teminat Mektupları", href: "/teminat", badge: "5" },
       ],

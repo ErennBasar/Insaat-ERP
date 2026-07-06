@@ -3,6 +3,7 @@ import { Layout } from './core/layout/layout';
 import { Dashboard } from './features/dashboard/dashboard';
 import { Login } from './features/login/login';
 import {ProjectsComponent} from './features/projects/projects';
+import {Contracts} from './features/contracts/contracts';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -12,8 +13,9 @@ export const routes: Routes = [
     component: Layout,
     children: [
       { path: 'dashboard', component: Dashboard },
-      // İleride buraya: { path: 'hakedis', component: HakedisComponent } vb. eklenecek
-      { path: 'projeler', component: ProjectsComponent }
+
+      { path: 'projects', component: ProjectsComponent },
+      { path: 'contracts', component: Contracts }
     ]
   },
   { path: '**', redirectTo: 'login' }
