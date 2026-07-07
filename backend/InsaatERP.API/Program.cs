@@ -17,6 +17,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateProjectCommand).Assembly));
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IContractRepository, ContractRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -38,8 +39,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseCors("AllowAngular");
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
