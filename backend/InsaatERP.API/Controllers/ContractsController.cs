@@ -1,4 +1,5 @@
 using InsaatERP.Application.Features.Contracts.Commands.CreateContract;
+using InsaatERP.Application.Features.Contracts.Queries.GetAllContracts;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,14 @@ namespace InsaatERP.API.Controllers
             var contractId = await _mediator.Send(command);
 
             return Ok(contractId);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var query = new GetAllContractsQuery();
+            var contracts = await _mediator.Send(query);
+            return Ok(contracts);
         }
     }
 }

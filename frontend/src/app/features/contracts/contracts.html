@@ -6,14 +6,15 @@
         <span>Ana Sayfa</span> <span class="separator">/</span> <span>Sözleşme Yönetimi</span>
       </div>
       <h1 class="page-title">Sözleşme Yönetimi</h1>
-      <p class="page-desc">YZ destekli sözleşme analizi ve takibi</p>
+      <p class="page-desc">Tüm gelir ve gider sözleşmelerinin merkezi yönetimi</p>
     </div>
     <div class="header-actions" style="display: flex; gap: 8px;">
-      <button class="btn-outline">
-        <lucide-icon [img]="Upload" size="16" class="icon-sm"></lucide-icon>
-        Sözleşme Yükle
-      </button>
-      <button class="btn-primary">
+      <div class="search-box" style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-dim); padding: 8px 12px; border-radius: 6px;">
+        <lucide-icon [img]="Search" class="icon-sm text-muted" style="margin-right: 8px;"></lucide-icon>
+        <input type="text" placeholder="Sözleşme ara..." style="background: transparent; border: none; color: var(--text-primary); outline: none;">
+      </div>
+
+      <button class="btn-primary" (click)="showAddModal = true">
         <lucide-icon [img]="Plus" size="16" class="icon-sm"></lucide-icon>
         Yeni Sözleşme
       </button>
@@ -24,34 +25,34 @@
     <div class="stat-card">
       <div class="stat-header">
         <span class="stat-label">Toplam Sözleşme</span>
-        <lucide-icon [img]="FileText" size="16" class="icon-sm te"></lucide-icon>
+        <lucide-icon [img]="FileText" size="16" class="icon-sm text-muted"></lucide-icon>
       </div>
-      <div class="stat-value">12</div>
-      <div class="stat-sub">Aktif: 8</div>
+      <div class="stat-value">{{ contracts.length }}</div>
+      <div class="stat-sub">Aktif: {{ activeContractsCount }}</div>
     </div>
     <div class="stat-card">
       <div class="stat-header">
-        <span class="stat-label">YZ Analiz Bekleniyor</span>
-        <lucide-icon [img]="Clock" size="16" class="icon-sm text-primary"></lucide-icon>
+        <span class="stat-label">Ana Sözleşme Bedeli</span>
+        <lucide-icon [img]="DollarSign" size="16" class="icon-sm text-success"></lucide-icon>
       </div>
-      <div class="stat-value text-warning">2</div>
-      <div class="stat-sub text-warning">Yüklendi</div>
+      <div class="stat-value text-success">{{ totalMainContractValue | currency:'TRY':'symbol':'1.0-0' }}</div>
+      <div class="stat-sub text-success">Tahmini Gelir</div>
     </div>
     <div class="stat-card">
       <div class="stat-header">
-        <span class="stat-label">Aktif Uyarı</span>
-        <lucide-icon [img]="AlertTriangle" size="16" class="icon-sm text-danger"></lucide-icon>
+        <span class="stat-label">YZ Analizi Bekleyen</span>
+        <lucide-icon [img]="BrainCircuit" size="16" class="icon-sm text-warning"></lucide-icon>
       </div>
-      <div class="stat-value text-danger">6</div>
-      <div class="stat-sub text-danger">Yaklaşan yükümlülük</div>
+      <div class="stat-value text-warning">{{ pendingAiAnalysisCount }}</div>
+      <div class="stat-sub text-warning">İncelenecek Taslak</div>
     </div>
     <div class="stat-card">
       <div class="stat-header">
-        <span class="stat-label">Analiz Tamamlanan</span>
-        <lucide-icon [img]="CheckCircle2" size="16" class="icon-sm text-success"></lucide-icon>
+        <span class="stat-label">Yaklaşan Tarihler</span>
+        <lucide-icon [img]="Calendar" size="16" class="icon-sm text-primary"></lucide-icon>
       </div>
-      <div class="stat-value text-success">8</div>
-      <div class="stat-sub text-success">Sözleşme</div>
+      <div class="stat-value text-primary">0</div>
+      <div class="stat-sub text-primary">Bu Ay İçinde</div>
     </div>
   </div>
 
@@ -61,47 +62,44 @@
         <div class="contract-card-header">
           <div class="header-left">
             <div class="badge-row">
-              <span class="contract-id">{{ c.id }}</span>
-              <span class="status-badge" [ngClass]="c.aiStatus === 'Analiz Edildi' ? 'status-success' : 'status-warning'">
-                YZ: {{ c.aiStatus }}
+              <span class="contract-id">{{ c.contractCode }}</span>
+              <span class="status-badge" [ngClass]="getStatusClass(c.status)">
+                {{ getStatusLabel(c.status) }}
               </span>
-              @if (c.alerts > 0) {
-                <span class="status-badge status-danger">
-                  {{ c.alerts }} Uyarı
-                </span>
-              }
+              <span class="status-badge" [ngClass]="getTypeClass(c.type)">
+                {{ getTypeLabel(c.type) }}
+              </span>
             </div>
-            <p class="contract-name">{{ c.name }}</p>
-            <p class="contract-client">{{ c.client }}</p>
+            <p class="contract-name">{{ c.title }}</p>
+            <p class="contract-client" style="display: flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 13px;">
+              <lucide-icon [img]="Building2" size="14" class="icon-xs"></lucide-icon>
+              {{ c.counterpartyName }}
+            </p>
           </div>
           <div class="header-right">
-            <p class="contract-value">{{ c.value }}</p>
+            <p class="contract-value">{{ c.contractValue | currency:c.currency:'symbol':'1.0-0' }}</p>
           </div>
         </div>
+
         <div class="contract-card-body">
           <div class="info-group">
             <p class="info-label">İmza Tarihi</p>
-            <p class="info-value">{{ c.signed }}</p>
+            <p class="info-value">{{ c.signingDate | date:'dd.MM.yyyy' }}</p>
           </div>
           <div class="info-group">
-            <p class="info-label">Süre</p>
-            <p class="info-value">{{ c.duration }}</p>
+            <p class="info-label">Revizyon</p>
+            <p class="info-value">Rev {{ c.revisionNumber }}</p>
           </div>
           <div class="info-group">
-            <p class="info-label">Ödeme Vadesi</p>
-            <p class="info-value">{{ c.paymentTerm }}</p>
+            <p class="info-label">Ceza Şartı</p>
+            <p class="info-value">{{ c.penaltyRate || 'Belirtilmedi' }}</p>
           </div>
           <div class="info-group">
-            <p class="info-label">Teminat</p>
-            <p class="info-value">{{ c.guarantee }}</p>
-          </div>
-          <div class="info-group">
-            <p class="info-label">Ceza</p>
-            <p class="info-value">{{ c.penalty }}</p>
-          </div>
-          <div class="info-group">
-            <p class="info-label">Garanti</p>
-            <p class="info-value">{{ c.warranty }}</p>
+            <p class="info-label">YZ Analiz Durumu</p>
+            <p class="info-value" [ngClass]="getAiStatusClass(c.aiStatus)" style="display: flex; align-items: center; gap: 4px;">
+              <lucide-icon [img]="BrainCircuit" size="14" class="icon-xs"></lucide-icon>
+              {{ c.aiStatus === 1 ? 'Bekleniyor' : (c.aiStatus === 2 ? 'Analiz Edildi' : 'Hata') }}
+            </p>
           </div>
         </div>
       </div>
@@ -109,3 +107,80 @@
   </div>
 
 </div>
+
+@if (showAddModal) {
+  <div class="modal-backdrop" (click)="showAddModal = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Yeni Sözleşme Ekle</h2>
+        <button class="close-btn" (click)="showAddModal = false">
+          <lucide-icon [img]="X" size="20"></lucide-icon>
+        </button>
+      </div>
+
+      <form [formGroup]="contractForm" (ngSubmit)="onSubmit()" class="modal-form">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Bağlı Proje</label>
+            <select formControlName="projectId" class="form-control">
+              <option value="">Proje Seçiniz</option>
+              @for (p of availableProjects; track p.id) {
+                <option [value]="p.id">{{ p.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Sözleşme Türü</label>
+            <select formControlName="type" class="form-control">
+              <option value="1">Ana Sözleşme (Gelir)</option>
+              <option value="2">Taşeron Sözleşmesi (Gider)</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Sözleşme Adı / Başlık</label>
+            <input type="text" formControlName="title" class="form-control" placeholder="Örn: Elektrik Altyapı İşleri">
+          </div>
+
+          <div class="form-group">
+            <label>Karşı Taraf (Müşteri/Taşeron)</label>
+            <input type="text" formControlName="counterpartyName" class="form-control" placeholder="Örn: EÜAŞ veya Bosch">
+          </div>
+
+          <div class="form-group">
+            <label>İmza Tarihi</label>
+            <input type="date" formControlName="signingDate" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>Sözleşme Bedeli</label>
+            <input type="number" formControlName="contractValue" class="form-control" placeholder="0.00">
+          </div>
+
+          <div class="form-group">
+            <label>Para Birimi</label>
+            <select formControlName="currency" class="form-control">
+              <option value="TRY">TRY (₺)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Ceza Oranı / Şartı</label>
+            <input type="text" formControlName="penaltyRate" class="form-control" placeholder="Örn: Gecikilen her gün için binde 3">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" (click)="showAddModal = false">İptal</button>
+          <button type="submit" class="btn-primary">Sözleşmeyi Kaydet</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+}
